@@ -1,0 +1,65 @@
+Phase 0  → Project Foundation
+Phase 1  → Authentication & User Management
+Phase 2  → Media Management
+Phase 3  → Object Storage
+Phase 4  → RabbitMQ Integration
+Phase 5  → Image Processing
+Phase 6  → Video Processing
+Phase 7  → Metadata Extraction
+Phase 8  → Redis
+Phase 9  → Sharing & CDN
+Phase 10 → Analytics
+Phase 11 → Monitoring & Logging
+Phase 12 → Production Readiness
+Phase 13 → Deployment
+
+
+****************************************
+
+Phase 1: Authentication, PostgreSQL schema, MinIO integration, basic upload/download APIs.
+Phase 2: RabbitMQ with image processing (Sharp) and processing status updates.
+Phase 3: Video processing (FFmpeg), multiple output resolutions, thumbnail generation.
+Phase 4: Redis caching, distributed locks, upload progress, and rate limiting.
+Phase 5: MongoDB metadata and analytics collection.
+Phase 6: Sharing, signed URLs, API keys, quotas, monitoring, retries, and dead-letter queues.
+
+****************************************
+
+Phase 1 — Foundation, Authentication & Media Upload (MVP)
+
+Goal
+A user can:
+    Register/Login
+    Upload an image/video
+    Store it in MinIO
+    View uploaded files
+    Download files
+    Delete files
+No background processing yet.
+
+Services:
+    API Gateway
+    Auth Service
+    Media Service
+
+PostgreSQL Tables:
+    users
+    roles
+    refresh_tokens
+    api_keys
+    folders
+    media_assets
+
+Media Asset Schema:
+    id
+    user_id
+    folder_id
+    file_name
+    original_name
+    mime_type
+    extension
+    size
+    storage_path
+    status
+    created_at
+    updated_at

@@ -1,0 +1,31 @@
+1. Client uploads video/image
+        │
+2. API Gateway authenticates request
+        │
+3. Media Service validates request
+        │
+4. Save asset record in PostgreSQL
+        │
+5. Upload original file to MinIO/S3
+        │
+6. Publish processing job to RabbitMQ
+        │
+7. Image/Video workers consume job
+        │
+8. Redis lock prevents duplicate processing
+        │
+9. FFmpeg/Sharp process the media
+        │
+10. Metadata Worker extracts metadata
+        │
+11. Save metadata into MongoDB
+        │
+12. Upload processed files to MinIO/S3
+        │
+13. Update PostgreSQL job & asset status
+        │
+14. Cache metadata in Redis
+        │
+15. Notification Service informs client
+        │
+16. Client downloads optimized media

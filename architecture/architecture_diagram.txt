@@ -1,0 +1,100 @@
+                                        ┌──────────────────────────┐
+                                        │      Web / Mobile App    │
+                                        └─────────────┬────────────┘
+                                                      │
+                                              HTTPS / REST API
+                                                      │
+                                        ┌─────────────▼────────────┐
+                                        │     API Gateway/Nginx    │
+                                        │ Rate Limit | Auth | SSL  │
+                                        └─────────────┬────────────┘
+                                                      │
+                ┌─────────────────────────────────────┼─────────────────────────────────────┐
+                │                                     │                                     │
+        ┌───────▼────────┐                   ┌────────▼─────────┐                 ┌────────▼────────┐
+        │  Auth Service  │                   │  Media Service   │                 │ Sharing Service │
+        └───────┬────────┘                   └────────┬─────────┘                 └────────┬────────┘
+                │                                     │                                    │
+                │                                     │                                    │
+         PostgreSQL                           PostgreSQL                           PostgreSQL
+          (Users, Roles,                     (Assets, Jobs,                      (Share Links,
+          API Keys, etc.)                   Folders, Permissions)               Permissions)
+
+                                               │
+                                               │
+                                      Upload Original File
+                                               │
+                                               ▼
+                                      ┌───────────────────┐
+                                      │  MinIO / AWS S3   │
+                                      │  Original Bucket  │
+                                      └─────────┬─────────┘
+                                                │
+                                                │ Create Processing Job
+                                                ▼
+                                     ┌──────────────────────────┐
+                                     │      RabbitMQ Exchange    │
+                                     └─────────┬────────────────┘
+                                               │
+      ┌──────────────────────────────┬─────────┼──────────┬───────────────────────────────┐
+      │                              │         │          │                               │
+      ▼                              ▼         ▼          ▼                               ▼
+┌─────────────┐              ┌─────────────┐ ┌──────────────┐ ┌────────────────┐ ┌────────────────┐
+│Image Worker │              │Video Worker │ │MetadataWorker│ │WatermarkWorker │ │NotificationSvc │
+└──────┬──────┘              └──────┬──────┘ └──────┬───────┘ └────────┬───────┘ └────────┬───────┘
+       │                            │               │                  │                   │
+       │ Sharp                      │ FFmpeg        │ ExifTool         │ Sharp             │
+       │                            │ FFprobe       │                  │                   │
+       ▼                            ▼               ▼                  ▼                   ▼
+Resize Image                  Generate 480p     Extract EXIF      Apply Logo       Email/WebSocket
+Compress                      Generate 720p     Video Metadata    Watermark        Push Events
+Convert WebP                  Generate 1080p    Duration
+Generate Thumb                Preview GIF       Resolution
+                               Audio Extract
+
+      └──────────────┬──────────────────────┬──────────────────────┬─────────────────────────┘
+                     │                      │                      │
+                     ▼                      ▼                      ▼
+              Processed Files        Metadata JSON         Analytics Events
+                     │                      │                      │
+          ┌──────────▼──────────┐  ┌────────▼─────────┐  ┌────────▼─────────┐
+          │   MinIO / AWS S3    │  │    MongoDB       │  │     MongoDB      │
+          │ processed bucket    │  │ EXIF Metadata    │  │ Views Analytics  │
+          │ thumbnails          │  │ OCR Results      │  │ Geo Statistics   │
+          │ previews            │  │ AI Tags (future) │  │ Device Info      │
+          └──────────┬──────────┘  └──────────────────┘  └──────────────────┘
+                     │
+                     │
+                     ▼
+               Update Asset Status
+                     │
+                     ▼
+              PostgreSQL (Asset Table)
+
+                     │
+                     ▼
+             Cache Frequently Used Data
+                     │
+        ┌───────────────────────────────────────┐
+        │                Redis                  │
+        │---------------------------------------│
+        │ Asset Metadata Cache                  │
+        │ Upload Progress                       │
+        │ Distributed Locks                     │
+        │ Rate Limiting                         │
+        │ Session Cache                         │
+        │ Frequently Accessed Assets            │
+        │ Processing Status                     │
+        └───────────────────────────────────────┘
+
+                     │
+                     ▼
+              Notification Service
+                     │
+      ┌──────────────┴──────────────┐
+      │                             │
+      ▼                             ▼
+ WebSocket/SSE                Email/Webhook
+      │
+      ▼
+     Client UI (Live Progress)
