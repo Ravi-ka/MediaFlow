@@ -1,7 +1,7 @@
 import dotenv from "dotenv"
 dotenv.config()
 import express, { Request, Response, Express } from "express";
-import pool from "./postgres";
+import pool from "./database/postgres";
 
 const app: Express = express();
 app.get("/health", (req: Request, res: Response) => {
