@@ -22,6 +22,7 @@
     "typescript"
   ],
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
@@ -42,6 +43,7 @@
     "nodemon": "^3.1.14",
     "pg": "^8.22.0",
     "redis": "^6.1.0",
-    "ts-node-dev": "^2.0.0"
+    "ts-node-dev": "^2.0.0",
+    "winston": "^3.19.0"
   }
 }
