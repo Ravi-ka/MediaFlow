@@ -11,5 +11,10 @@ Phase 1:
     - Build the Auth Service with JWT (For now these 2 API's are enough, later we can add more)
         - /api/v1/auth/register
         - /api/v1/auth/login
-        
-        
+        - Auth Middleware
+        - Setup Users table and DB schema
+        - Update RBAC Middleware
+    
+    - Build the Media Service
+        - Setup the MinIO connection
+        - 

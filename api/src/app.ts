@@ -3,6 +3,8 @@ dotenv.config()
 import express, { Request, Response, Express } from "express";
 import pool from "./database/postgres";
 import authRouter from "./routes/auth/authRoutes";
+import { authMiddleware } from "./middlewares/jwtAuthMiddleware";
+import { requireTier } from "./middlewares/rbacMiddleware";
 
 const app: Express = express();
 
@@ -19,7 +21,7 @@ app.get("/health", (req: Request, res: Response) => {
   });
 });
 
-app.get("/testdb", async (req: Request, res: Response) => {
+app.get("/testdb", authMiddleware, requireTier('FREE'), async (req: Request, res: Response) => {
   const { rows } = await pool.query('SELECT * FROM user_test');
   res.status(200).json({
     message: "Database is healthy",
