@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 import logger from "../utils/logger";
-import { buildWelcomeEmail } from "../templates/welcomeEmail";
+import { buildWelcomeEmail } from "../emailTemplates/welcomeEmail";
 
 const resendApiKey = process.env.RESEND_API_KEY;
 const emailFrom =
