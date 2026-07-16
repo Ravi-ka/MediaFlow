@@ -3,6 +3,7 @@ import { RegisterUserRequestInterface } from "../interface/authInterface";
 import bcrypt from "bcrypt";
 import { getUserByEmailRepo, registerUserRepo } from "../repository/authRepository";
 import jwt from "jsonwebtoken";
+import { sendWelcomeEmail } from "./emailService";
 
 
 export const registerUserService = async (user:RegisterUserRequestInterface):Promise<void> =>{
@@ -21,6 +22,7 @@ export const registerUserService = async (user:RegisterUserRequestInterface):Pro
         
         const newUser = { email, passwordHash: hashedPassword, subscriptionTier };
         await registerUserRepo(newUser);
+        await sendWelcomeEmail(email, subscriptionTier);
     } catch (error) {
         logger.error("Error occurred in authService.registerUser",{error});
         throw error;
