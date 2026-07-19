@@ -1,7 +1,9 @@
 export interface RegisterUserRequestInterface {
   email: string;
   password: string;
-  subscriptionTier: 'FREE' | 'PREMIUM';
+  first_name: string;
+  last_name: string;
+  username: string;
 }
 
 export interface LoginUserRequestInterface {
@@ -12,6 +14,8 @@ export interface LoginUserRequestInterface {
 export interface UserRecord {
   id: string;
   email: string;
-  passwordHash: string;
-  subscriptionTier: 'FREE' | 'PREMIUM';
+  password_hash: string;
+  first_name: string;
+  last_name: string;
+  username: string;
 }

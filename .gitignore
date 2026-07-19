@@ -144,3 +144,6 @@ vite.config.ts.timestamp-*
 
 # Folder structure
 /folder_structure.txt
+
+# DB Schema
+/db_schema

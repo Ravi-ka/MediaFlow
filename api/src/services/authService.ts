@@ -8,7 +8,7 @@ import { sendWelcomeEmail } from "./emailService";
 
 export const registerUserService = async (user:RegisterUserRequestInterface):Promise<void> =>{
     try {
-        const {email, password, subscriptionTier} = user;
+        const {email, password, first_name, last_name, username} = user;
 
         // Check if the email is already exits
         const checkUser = await getUserByEmailRepo(email);
@@ -20,9 +20,9 @@ export const registerUserService = async (user:RegisterUserRequestInterface):Pro
         // hash the password
         const hashedPassword = await bcrypt.hash(password,10);
         
-        const newUser = { email, passwordHash: hashedPassword, subscriptionTier };
+        const newUser = { email, password_hash: hashedPassword, first_name, last_name, username };
         await registerUserRepo(newUser);
-        await sendWelcomeEmail(email, subscriptionTier);
+        await sendWelcomeEmail(email, first_name, last_name, username);
     } catch (error) {
         logger.error("Error occurred in authService.registerUser",{error});
         throw error;
@@ -36,7 +36,7 @@ export const loginUserService = async(email: string, password: string): Promise<
             logger.info("User not found",{email})
             throw new Error("User not found");
         }
-        const isPasswordValid = await bcrypt.compare(password,user.passwordHash);
+        const isPasswordValid = await bcrypt.compare(password,user.password_hash);
         if(!isPasswordValid){
             logger.info("Invalid Password",{email})
             throw new Error("Invalid Password");
@@ -44,7 +44,7 @@ export const loginUserService = async(email: string, password: string): Promise<
         const payload = jwt.sign({
             email:user.email,
             id:user.id,
-            subscriptionTier:user.subscriptionTier
+            username:user.username
         },process.env.JWT_SECRET!,{
             expiresIn: process.env.JWT_EXPIRY as any
         });

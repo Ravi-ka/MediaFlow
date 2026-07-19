@@ -4,7 +4,7 @@ import { buildWelcomeEmail } from "../emailTemplates/welcomeEmail";
 
 const resendApiKey = process.env.RESEND_API_KEY;
 const emailFrom =
-  process.env.EMAIL_FROM || "MediaFlow <onboarding@resend.dev>";
+  process.env.EMAIL_FROM || "Imadeo <onboarding@resend.dev>";
 
 let resendClient: Resend | null = null;
 
@@ -21,7 +21,9 @@ const getResendClient = (): Resend | null => {
 
 export const sendWelcomeEmail = async (
   email: string,
-  subscriptionTier: "FREE" | "PREMIUM"
+  first_name: string,
+  last_name: string,
+  username: string
 ): Promise<void> => {
   const resend = getResendClient();
 
@@ -32,7 +34,7 @@ export const sendWelcomeEmail = async (
     return;
   }
 
-  const { subject, html, text } = buildWelcomeEmail(email, subscriptionTier);
+  const { subject, html, text } = buildWelcomeEmail(email, first_name, last_name, username);
 
   try {
     const { error } = await resend.emails.send({
@@ -47,8 +49,8 @@ export const sendWelcomeEmail = async (
       throw error;
     }
 
-    logger.info("Welcome email sent", { email, subscriptionTier });
+    logger.info("Welcome email sent", { email, first_name, last_name, username });
   } catch (error) {
-    logger.error("Failed to send welcome email", { email, error });
+    logger.error("Failed to send welcome email", { email, first_name, last_name, username, error });
   }
 };

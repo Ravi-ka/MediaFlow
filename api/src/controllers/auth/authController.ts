@@ -5,15 +5,17 @@ import { loginUserService, registerUserService } from "../../services/authServic
 
 export const registerUserController = async (req: Request, res: Response): Promise<void> => {
     try {
-        const {email, password, subscriptionTier} = req.body;
-        if(!email || !password || !subscriptionTier){
+        const {email, password, first_name, last_name, username} = req.body;
+        if(!email || !password || !first_name || !last_name || !username){
             res.status(400).json({message:"Bad Request"});
             return;
         }
         const user:RegisterUserRequestInterface = {
             email,
             password,
-            subscriptionTier
+            first_name,
+            last_name,
+            username,
         }
         await registerUserService(user);
         res.status(201).json({message:"User registered successfully"});
