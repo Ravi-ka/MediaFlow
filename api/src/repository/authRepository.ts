@@ -24,3 +24,13 @@ export const getUserByEmailRepo = async (email: string): Promise<UserRecord | nu
         throw error;
     }
 }
+
+export const getAllDetailsOfUser = async (email:string):Promise<void> =>{
+try {
+    const {rows} = await pool.query("SELECT id, first_name, last_name, username,email,profile_image_url, role, subscription_tier, created_at FROM users WHERE email = $1",[email]);
+    return rows[0] as any| null;
+} catch (error) {
+    logger.error("Error occurred in authRepository.getAllDetailsOfUser",{error})
+    throw error;
+}
+}

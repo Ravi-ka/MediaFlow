@@ -17,8 +17,8 @@ export const registerUserController = async (req: Request, res: Response): Promi
             last_name,
             username,
         }
-        await registerUserService(user);
-        res.status(201).json({message:"User registered successfully"});
+        const userDetails = await registerUserService(user);
+        res.status(201).json({message:"User registered successfully",userDetails});
     } catch (error) {
         logger.error('Error occurred in authController.registerUser',{error});
         if(error instanceof Error && error.message === "User already exists"){
@@ -37,7 +37,7 @@ export const loginUserController = async(req:Request, res:Response): Promise<voi
             return;
         };
         const result = await loginUserService(email, password);
-        res.status(200).json({result:"success",message:"User logged in successfully",token:result});
+        res.status(200).json({result:"success",message:"User logged in successfully",token:result.payload, userdetails:result.userDeatils});
         
     } catch (error) {
         logger.error('Error occurred in authController.loginUser',{error});

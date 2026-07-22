@@ -1,7 +1,7 @@
 import logger from "../utils/logger"
 import { RegisterUserRequestInterface } from "../interface/authInterface";
 import bcrypt from "bcrypt";
-import { getUserByEmailRepo, registerUserRepo } from "../repository/authRepository";
+import { getAllDetailsOfUser, getUserByEmailRepo, registerUserRepo } from "../repository/authRepository";
 import jwt from "jsonwebtoken";
 import { sendWelcomeEmail } from "./emailService";
 
@@ -22,7 +22,10 @@ export const registerUserService = async (user:RegisterUserRequestInterface):Pro
         
         const newUser = { email, password_hash: hashedPassword, first_name, last_name, username };
         await registerUserRepo(newUser);
+        const userDeatils = await getAllDetailsOfUser(email);
+        console.log('userDeatils:',userDeatils);
         await sendWelcomeEmail(email, first_name, last_name, username);
+        return userDeatils;
     } catch (error) {
         logger.error("Error occurred in authService.registerUser",{error});
         throw error;
@@ -49,7 +52,9 @@ export const loginUserService = async(email: string, password: string): Promise<
             expiresIn: process.env.JWT_EXPIRY as any
         });
         logger.info("Login successfull",{email});
-        return payload;
+        const userDeatils = await getAllDetailsOfUser(user.email);
+        const userData = {userDeatils,payload}
+        return userData as any;
         
     } catch (error) {
         logger.error("Error occurred in authService.loginUser",error);

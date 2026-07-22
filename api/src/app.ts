@@ -6,11 +6,13 @@ import authRouter from "./routes/auth/authRoutes";
 import { authMiddleware } from "./middlewares/jwtAuthMiddleware";
 import { requireTier } from "./middlewares/rbacMiddleware";
 import minioClient from "./database/minio";
+import cors from "cors";
 
 const app: Express = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 app.use("/api/v1/auth", authRouter);
 
